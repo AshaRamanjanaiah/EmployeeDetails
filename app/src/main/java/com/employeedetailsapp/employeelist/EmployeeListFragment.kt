@@ -5,10 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.employeedetailsapp.R
+import com.employeedetailsapp.util.ConnectToInternet
 import kotlinx.android.synthetic.main.fragment_employee_list.*
 
 /**
@@ -25,6 +28,8 @@ class EmployeeListFragment : Fragment() {
      * initialize our [EmployeeListViewModelViewModel].
      */
     private lateinit var employeeListViewModel: EmployeeListViewModel
+
+    private var isConnected = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +63,20 @@ class EmployeeListFragment : Fragment() {
             employeeListViewModel.refresh()
             loading.visibility = View.GONE
             refreshLayout.isRefreshing = false
+            if (!isConnected) {
+                showToast()
+            }
         }
+
+        val connectionToInternet = ConnectToInternet(activity)
+        connectionToInternet.observe(requireActivity(), object : Observer<Boolean> {
+            override fun onChanged(@Nullable connection: Boolean) {
+                isConnected = connection
+                if (!connection) {
+                    showToast()
+                }
+            }
+        })
     }
 
     private fun populateUI(status: EmployeeApiStatus?) {
@@ -83,5 +101,13 @@ class EmployeeListFragment : Fragment() {
         @JvmStatic
         fun newInstance() =
             EmployeeListFragment()
+    }
+
+    private fun showToast() {
+        Toast.makeText(
+            activity,
+            String.format(getString(R.string.you_are_offline)),
+            Toast.LENGTH_SHORT
+        ).show();
     }
 }

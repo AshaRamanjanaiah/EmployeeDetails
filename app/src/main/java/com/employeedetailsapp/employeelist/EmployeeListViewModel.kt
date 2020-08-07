@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 enum class EmployeeApiStatus { LOADING, ERROR, DONE }
 
@@ -67,13 +68,13 @@ class EmployeeListViewModel: ViewModel() {
                 val listResult = getEmployeeDeferred.await()
                 _status.value = EmployeeApiStatus.DONE
                 _employees.value = listResult
-                Log.d("EmployeeListViewModel", "Data loaded successfully from network")
+                Timber.i( "Data loaded successfully from network")
             } catch (e: Exception) {
                 if (_employees.value.isNullOrEmpty()) {
                     _status.value = EmployeeApiStatus.ERROR
                     _employees.value = ArrayList()
                 }
-                Log.i("EmployeeListViewModel", "Error loading data from network")
+                Timber.i( "Error loading data from network")
             }
         }
     }

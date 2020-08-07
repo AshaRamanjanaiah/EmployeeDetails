@@ -10,8 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.employeedetailsapp.R
 import com.employeedetailsapp.employeedetails.EmployeeDetailsActivity
 import com.employeedetailsapp.model.Employee
+import com.employeedetailsapp.util.IMAGE_JPEG
+import com.employeedetailsapp.util.convertBase64StringToBitmap
+import com.employeedetailsapp.util.convertBitmapToJpeg
 import kotlinx.android.synthetic.main.list_item_employee_list.view.*
 
+/**
+ * This class implements a [RecyclerView] [ListAdapter] which presents [List]
+ * data, including computing diffs between lists.
+ */
 class EmployeeListAdapter : ListAdapter<Employee,
         EmployeeListAdapter.EmployeeListViewHolder>(EmployeeListDiffCallback()) {
 
@@ -35,8 +42,15 @@ class EmployeeListAdapter : ListAdapter<Employee,
             name.text = "${item.first_name} ${item.last_name}"
             gender.text = item.gender
             dateOfBirth.text = item.birth_date
+            if(!item.thumbImage.isNullOrEmpty()) {
+                image.setImageBitmap(convertBase64StringToBitmap(item.thumbImage))
+            }
             employeeListLayout.setOnClickListener {
                 val intent = Intent(it.context, EmployeeDetailsActivity::class.java)
+                if (!item.image.isNullOrEmpty()) {
+                    val bitmap = convertBase64StringToBitmap(item.image)
+                    intent.putExtra(IMAGE_JPEG, convertBitmapToJpeg(bitmap))
+                }
                 it.context.startActivity(intent)
             }
         }
@@ -52,6 +66,10 @@ class EmployeeListAdapter : ListAdapter<Employee,
         }
     }
 
+    /**
+     * Allows the RecyclerView to determine which items have changed when the [List] of [Employee]
+     * has been updated.
+     */
     class EmployeeListDiffCallback : DiffUtil.ItemCallback<Employee>() {
         override fun areItemsTheSame(oldItem: Employee, newItem: Employee): Boolean {
             return oldItem.id == newItem.id

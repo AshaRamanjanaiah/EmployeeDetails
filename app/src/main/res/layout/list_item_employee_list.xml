@@ -2,70 +2,75 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/employee_list_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/employee_list_layout">
+    android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/iv_employee_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_background"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/avatars" />
+        <ImageView
+            android:id="@+id/iv_employee_image"
+            android:layout_width="@dimen/thumnail_image_dimen"
+            android:layout_height="@dimen/thumnail_image_dimen"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
 
-            <TextView
-                android:id="@+id/tv_name"
-                style="@style/cardTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_employee_image"
-                app:layout_constraintTop_toTopOf="@+id/iv_employee_image"
-                tools:text="John" />
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/cardTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_employee_image"
+            app:layout_constraintTop_toTopOf="@+id/iv_employee_image"
+            tools:text="John" />
 
-            <TextView
-                android:id="@+id/tv_gender"
-                style="@style/cardContent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_employee_image"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name"
-                tools:text="Male" />
+        <TextView
+            android:id="@+id/tv_gender"
+            style="@style/cardContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_employee_image"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name"
+            tools:text="Male" />
 
-            <TextView
-                android:id="@+id/tv_date_of_birth"
-                style="@style/cardContent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_employee_image"
-                app:layout_constraintTop_toBottomOf="@+id/tv_gender"
-                tools:text="25 August 2011" />
+        <TextView
+            android:id="@+id/tv_date_of_birth"
+            style="@style/cardContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_employee_image"
+            app:layout_constraintTop_toBottomOf="@+id/tv_gender"
+            tools:text="25 August 2011" />
 
-            <View
-                android:id="@+id/textView4"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="@color/colorGrey"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_employee_image"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_employee_image"
-                app:layout_constraintTop_toBottomOf="@+id/tv_date_of_birth" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+            android:id="@+id/textView4"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/colorGrey"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_employee_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_employee_image"
+            app:layout_constraintTop_toBottomOf="@+id/tv_date_of_birth" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
