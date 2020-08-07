@@ -9,9 +9,21 @@
     </style>
 
     <style name="appTitle">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">sans-serif-black</item>
         <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="cardTitle">
+        <item name="android:textSize">18sp</item>
+        <item name="fontFamily">sans-serif-black</item>
+        <item name="color">@color/colorBlack</item>
+    </style>
+
+    <style name="cardContent">
+        <item name="android:textSize">14sp</item>
+        <item name="color">@color/colorBlack</item>
+        <item name="fontFamily">sans-serif</item>
     </style>
 
 </resources>

@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.employeedetailsapp.R
 import kotlinx.android.synthetic.main.fragment_employee_list.*
@@ -18,6 +20,11 @@ class EmployeeListFragment : Fragment() {
 
     private val employeeListAdapter =
         EmployeeListAdapter()
+
+    /**
+     * initialize our [EmployeeListViewModelViewModel].
+     */
+    private lateinit var employeeListViewModel: EmployeeListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,8 +41,42 @@ class EmployeeListFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = employeeListAdapter
         }
-        val arrayList = listOf<String>("Asha", "Manas", "Charvi")
-        employeeListAdapter.submitList(arrayList)
+
+        employeeListViewModel =
+            of(this).get(EmployeeListViewModel::class.java)
+
+        employeeListViewModel.employees.observe(viewLifecycleOwner, Observer {
+            employeeListAdapter.submitList(it)
+        })
+
+        employeeListViewModel.status.observe(viewLifecycleOwner, Observer {
+            populateUI(it)
+        })
+
+        refreshLayout.setOnRefreshListener {
+            loadError.visibility = View.GONE
+            employeeListViewModel.refresh()
+            loading.visibility = View.GONE
+            refreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun populateUI(status: EmployeeApiStatus?) {
+        when(status) {
+            EmployeeApiStatus.LOADING -> {
+                loading.visibility = View.VISIBLE
+                loadError.visibility = View.GONE
+            }
+            EmployeeApiStatus.ERROR -> {
+                loadError.visibility = View.VISIBLE
+                loading.visibility = View.GONE
+            }
+            EmployeeApiStatus.DONE -> {
+                loading.visibility = View.GONE
+                loadError.visibility = View.GONE
+            }
+        }
+
     }
 
     companion object {
