@@ -1,14 +1,11 @@
 package com.employeedetailsapp.employeelist
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.employeedetailsapp.model.Employee
-import com.employeedetailsapp.network.EmployeeApiService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.employeedetailsapp.network.ApiHelper
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -17,7 +14,7 @@ enum class EmployeeApiStatus { LOADING, ERROR, DONE }
 /**
  * The [ViewModel] that is attached to the [EmployeeListFragment].
  */
-class EmployeeListViewModel: ViewModel() {
+class EmployeeListViewModel(val apiHelper: ApiHelper) : ViewModel() {
     // The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<EmployeeApiStatus>()
 
@@ -32,12 +29,6 @@ class EmployeeListViewModel: ViewModel() {
     // The external LiveData interface to the property is immutable, so only this class can modify
     val employees: LiveData<List<Employee>>
         get() = _employees
-
-    // Create a Coroutine scope using a job to be able to cancel when needed
-    private var viewModelJob = Job()
-
-    // the Coroutine runs using the Main (UI) dispatcher
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     /**
      * Call getEmployeeList() on init so we can display status immediately.
@@ -60,31 +51,20 @@ class EmployeeListViewModel: ViewModel() {
      * returns a coroutine Deferred, which we await to get the result of the transaction.
      */
     private fun getEmployeeList() {
-        coroutineScope.launch {
-            // Get the Deferred object for our Retrofit request
-            var getEmployeeDeferred = EmployeeApiService.retrofitService.getEmployeeList()
+        viewModelScope.launch {
             try {
-                // this will run on a thread managed by Retrofit
-                val listResult = getEmployeeDeferred.await()
-                _status.value = EmployeeApiStatus.DONE
-                _employees.value = listResult
-                Timber.i( "Data loaded successfully from network")
+                var getEmployeeDeferred = apiHelper.getEmployeeList()
+                _status.postValue(EmployeeApiStatus.DONE)
+                _employees.postValue(getEmployeeDeferred)
+                Timber.i("Data loaded successfully from network")
             } catch (e: Exception) {
                 if (_employees.value.isNullOrEmpty()) {
-                    _status.value = EmployeeApiStatus.ERROR
-                    _employees.value = ArrayList()
+                    _status.postValue(EmployeeApiStatus.ERROR)
+                    _employees.postValue(ArrayList())
                 }
-                Timber.i( "Error loading data from network")
+                Timber.i("Error loading data from network")
             }
         }
     }
 
-    /**
-     * When the [ViewModel] is finished, we cancel our coroutine [viewModelJob], which tells the
-     * Retrofit service to stop.
-     */
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
-    }
 }

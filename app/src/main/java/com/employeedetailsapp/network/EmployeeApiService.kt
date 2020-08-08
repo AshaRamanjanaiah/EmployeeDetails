@@ -24,7 +24,6 @@ private val okHttpClient = OkHttpClient.Builder()
 private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .addConverterFactory(GsonConverterFactory.create())
-    .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .client(okHttpClient)
     .build()
 

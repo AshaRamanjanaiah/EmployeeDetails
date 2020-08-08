@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.employeedetailsapp.R
+import com.employeedetailsapp.network.ApiHelperImpl
+import com.employeedetailsapp.network.EmployeeApiService
 import com.employeedetailsapp.util.ConnectToInternet
 import kotlinx.android.synthetic.main.fragment_employee_list.*
 
@@ -47,16 +49,8 @@ class EmployeeListFragment : Fragment() {
             adapter = employeeListAdapter
         }
 
-        employeeListViewModel =
-            of(this).get(EmployeeListViewModel::class.java)
-
-        employeeListViewModel.employees.observe(viewLifecycleOwner, Observer {
-            employeeListAdapter.submitList(it)
-        })
-
-        employeeListViewModel.status.observe(viewLifecycleOwner, Observer {
-            populateUI(it)
-        })
+        setupViewmodel()
+        displayNetworkStatus()
 
         refreshLayout.setOnRefreshListener {
             loadError.visibility = View.GONE
@@ -67,7 +61,9 @@ class EmployeeListFragment : Fragment() {
                 showToast()
             }
         }
+    }
 
+    private fun displayNetworkStatus() {
         val connectionToInternet = ConnectToInternet(activity)
         connectionToInternet.observe(requireActivity(), object : Observer<Boolean> {
             override fun onChanged(@Nullable connection: Boolean) {
@@ -76,6 +72,22 @@ class EmployeeListFragment : Fragment() {
                     showToast()
                 }
             }
+        })
+    }
+
+    private fun setupViewmodel() {
+        employeeListViewModel =
+            of(
+                this,
+                EmployeeListViewModelFactory(ApiHelperImpl(EmployeeApiService.retrofitService))
+            ).get(EmployeeListViewModel::class.java)
+
+        employeeListViewModel.employees.observe(viewLifecycleOwner, Observer {
+            employeeListAdapter.submitList(it)
+        })
+
+        employeeListViewModel.status.observe(viewLifecycleOwner, Observer {
+            populateUI(it)
         })
     }
 
